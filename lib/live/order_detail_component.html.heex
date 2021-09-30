@@ -1,0 +1,32 @@
+<div class="max-w-4xl mx-auto">
+    <h1 class="mb-4 title">
+        Order <%= #{@order.order_nr} %>
+    </h1>
+
+
+    <div class="flex justify-end py-4 text-xs">
+        <%= live_redirect "❯ edit", to: @smart_base_path.(%{action: :edit, order_nr: @order.order_nr}), class: "btn  btn-outline-primary" %>
+
+    </div>
+
+    <%= if @order.state == "cancelled" do %>
+
+    <div class="p-5 py-4 mb-5 text-xs text-center text-red-400 border border-red-400 rounded">this order was cancelled
+    </div>
+
+    <% end %>
+    <%= @orderhtml %>
+
+    <%= if @order.state != "cancelled"  && ! Order.is_invoiced?(@order) do %>
+    <div class="flex justify-end py-4 text-xs">
+        <%= link "✖ cancel order", to: "#", phx_click: "cancel_order", class: "btn  btn-outline-primary",
+                phx_target: @myself,  data: [confirm: "Are you sure you want to cancel this order ?"]
+        %>
+    </div>
+    <% end %>
+
+    <%= live_component  KandisOrderUi.Live.OrderAttachmentsComponent , 
+            id: "order_attachments", 
+            order: @order, 
+            parent_self: @myself %>
+</div>

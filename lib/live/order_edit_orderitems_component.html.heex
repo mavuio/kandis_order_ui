@@ -1,0 +1,18 @@
+<div id={@id}>
+
+  <div class="divide-y divide-gray-400">
+    <%= for {item,idx} <- Enum.with_index(@items,1) do %>
+    <div class="p-4">
+      <%= live_component  MyAppBe.Live.ShopLive.OrderEditItemComponent , 
+      id: "edit_item_#{@version}_#{idx}" , 
+      data: item, 
+      idx: idx, 
+      context: @context,
+      parent: "#"<>@id , 
+      data_key: String.to_atom("#{@data_key}_#{idx}"), 
+      editable: @editable %>
+    </div>
+    <% end %>
+  </div>
+
+</div>

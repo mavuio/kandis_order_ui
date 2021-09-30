@@ -1,0 +1,28 @@
+<div>
+  ALPINE TEST COMP comes here:
+
+  <button class="btn btn-sm" type="button" phx-click="toggle" phx-target="<%= @myself %>"><i class="fa fa-check"></i>
+    toggle</button>
+
+  <%= if @open do %>
+  <div>
+
+    <section x-data="{dummy:1}" x-init="console.log('#log 1388');">
+
+      txt: (
+      <span x-text="dummy"></span>
+      )
+      <button class="btn btn-sm" type="button" x-on:click="dummy++"><i class="fa fa-check"></i> +</button>
+    </section>
+  </div>
+  <% else %>
+  <div>
+
+    <section>
+
+      nope
+    </section>
+  </div>
+  <% end %>
+
+</div>

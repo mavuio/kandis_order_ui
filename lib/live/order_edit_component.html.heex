@@ -1,0 +1,73 @@
+<div>
+  <div class="max-w-4xl mx-auto mt-8 border rounded" id={@id}>
+
+    <div class="flex justify-between border-b border-gray-200 col-span-full">
+      <div class="px-4 py-5 sm:px-6">
+        <h2 id="applicant-information-title" class="text-lg font-medium leading-6 text-gray-900">
+          Order <%= @order.order_nr %>
+        </h2>
+        <p class="max-w-2xl mt-1 text-sm text-gray-500">
+          <%= @order.inserted_at  |> local_date() %>
+        </p>
+        <%= if Order.is_invoiced?(@order) do %>
+        <p class="max-w-2xl mt-1 text-sm text-gray-500">
+          Rechnungs-NR: <%= @order.invoice_nr  %>
+        </p>
+        <% end %>
+      </div>
+      <div class="p-6 text-center col-span-full">
+        <%= if pending_changes?(@changed_data) do %>
+        <%= link "save changes",
+         to: '#',
+         phx_click: "save", phx_target: @myself,
+         class: ["mr-4 btn btn-primary",( if pending_errors?(@changed_data_errors), do: " opacity-50 pointer-events-none cursor-not-allowed", else: "")],
+         phx_disable_with: "saving ..."
+
+        %>
+        <%= link "cancel", to: '#', phx_click: "cancel", phx_target: @myself,class: "btn btn-default" ,phx_disable_with: "cancelling ..." %>
+        <% else %>
+        <%= live_redirect "❮ back", to: @smart_base_path.(%{action: :view, order_nr: @order.order_nr}), class: "btn  btn-outline-primary text-xs" %>
+        <% end %>
+      </div>
+
+    </div>
+
+
+
+    <section class="border-b border-gray-200 ">
+      <div class="px-4 py-5 sm:px-6">
+        <h2 id="timeline-title" class="text-lg font-medium text-gray-900">Items</h2>
+      </div>
+
+      <%= live_component  KandisOrderUi.Live.OrderEditOrderitemsComponent , 
+      id: "edit_orderitems" , 
+      version: @version, 
+      context: @context,
+      data: @order.orderitems, 
+      data_key: :orderitem, 
+      editable: (! Order.is_cancelled?(@order) &&  !Order.is_invoiced?(@order)) %>
+
+
+    </section>
+
+
+    <div class="">
+      <section>
+        <div class="">
+          <div class="px-4 py-5 sm:px-6">
+            <%= live_component @socket, KandisOrderUi.Live.OrderEditOrdervarsComponent ,
+             id: "edit_ordervars" , 
+             version: @version, 
+             context: @context,
+             data: @order.ordervars, 
+             data_key: :ordervars, 
+             editable: ! Order.is_cancelled?(@order) %>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+
+  </div>
+</div>

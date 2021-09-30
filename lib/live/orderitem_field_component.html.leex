@@ -1,0 +1,38 @@
+<div class="" id="<%= @id %>">
+
+
+  <%= if @editing do %>
+  <div id="<%= @id %>_editing" class="flex items-center text-gray-900" x-data="{
+      triggerChange(){
+         setTimeout(() => {
+           document.getElementById('ordervars_form').dispatchEvent(new Event('submit', { bubbles: true }));
+          }, 250);
+         },
+         focusElement(){
+           console.log('#log 3453','focus');
+           this.$refs.input_element.focus();
+          }
+      }" x-init="focusElement(); console.log('#log 3841 INIT');">
+    <div class="flex-auto">
+      <%= input_block @f, @field.name , @input_options++["x-ref": "input_element" ] %>
+    </div>
+    <div class="ml-4">
+      <%= link  tw_icon(&Heroicons.Outline.x/1, "w-5 h-5"), to: "#", "x-on:click": "triggerChange", phx_target: @target_id, phx_value_fieldname: @field.name, phx_click: "cancel_edit", class: " text-gray-300 hover:text-gray-800"  %>
+    </div>
+  </div>
+  <% else %>
+  <div id="<%= @id %>_else"
+    class="flex items-center justify-between text-gray-900 border border-transparent display-inline hover:border-red-200">
+
+    <div class="flex-auto"><span class="block px-3 py-2 border border-transparent"><%= @display_value %></span></div>
+
+    <%= if @is_editable do %>
+
+    <div class="ml-4">
+      <%= link  tw_icon(&Heroicons.Outline.pencil_alt/1, "w-5 h-5"), to: "#", phx_target: @target_id, phx_value_fieldname: @field.name, phx_click: "start_edit", class: " text-gray-300 hover:text-red-500"  %>
+    </div>
+    <% end %>
+  </div>
+  <% end %>
+
+</div>

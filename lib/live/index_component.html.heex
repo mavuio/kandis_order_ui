@@ -1,0 +1,39 @@
+<div id={@id}>
+
+
+
+  <%= case @context.params["action"] do %>
+
+
+  <% "view" -> %>
+
+  <%= live_component  KandisOrderUi.Live.OrderDetailComponent, 
+        id: "order_detail",
+        context: @context,
+        smart_base_path: @smart_base_path
+
+ %>
+  <% "edit" -> %>
+
+  <%= live_component  KandisOrderUi.Live.OrderEditComponent, 
+        id: "order_edit",
+        context: @context,
+        kandis_order_ui_msg: @kandis_order_ui_msg,
+        smart_base_path: @smart_base_path
+
+ %>
+
+  <% _ -> %>
+
+  <%= live_component  KandisOrderUi.Live.OrderListComponent, 
+        id: "order_list",
+        context: @context,
+        smart_base_path: @smart_base_path
+
+ %>
+
+
+
+<% end %>
+
+</div>

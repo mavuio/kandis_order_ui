@@ -1,0 +1,105 @@
+<div>
+
+  <div class="mt-4 sm:col-span-2">
+    <dt class="text-sm font-medium text-gray-500">
+      Versions
+    </dt>
+    <dd class="my-4 text-sm text-gray-900">
+
+      <table class="w-full">
+        <%= for v <- @versions do %>
+        <tr>
+          <td class="p-2 text-sm align-top border border-gray-300"><%= v._version %>
+
+
+          </td>
+          <td class="p-2 text-sm align-top border border-gray-300">
+            <div class="font-mono text-xs text-right text-gray-400"><%= v._ts %></div>
+            <div><%= v._msg %></div>
+            <%= if v[:new_ordervars] do %>
+            <div class="font-mono text-xs text-red-400 whitespace-pre-wrap">
+              <%= v.new_ordervars  |> inspect(pretty: true)  |> String.trim("}{%") %></div>
+            <% end %>
+            <%= if v[:new_orderitems] do %>
+            <div class="font-mono text-xs text-red-400 whitespace-pre-wrap">
+              <%= v.new_orderitems  |> inspect(pretty: true)  |> String.trim("}{%") %></div>
+            <% end %>
+          </td>
+          <td class="relative p-2 text-sm align-top border border-gray-300">
+
+            <%= if v._version < @order.version do %>
+            <%= link tw_icon(&Heroicons.Outline.reply/1, "w-3 h-3"), to: "#", class: " p-1 absolute right-2 top-2 hover:border-red-500 hover:text-red-500 border border-transparent rounded", phx_click: "restore_version", phx_target: @parent_self, phx_value_version: v._version, phx_disable_with: "..." , title: "restore this version of the order",data: [confirm: "Are you sure you want to restore to this version of the order  ?"] %>
+
+            <% end %>
+
+            <ul class="w-44">
+              <%= if v.files["invoice"] do %>
+
+              <li class="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
+                <div class="flex items-center flex-1 w-0">
+                  <!-- Heroicon name: solid/paper-clip -->
+                  <svg class="w-5 h-5 text-gray-400 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                    fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd"
+                      d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <span class="flex-1 w-0 ml-2 ">
+                    <a href={v.files["invoice"].url} class="font-medium text-blue-600 hover:text-blue-500">
+                      Rechnung
+                    </a>
+                  </span>
+
+
+                </div>
+              </li>
+
+              <% else %>
+              <%= if v._version == @order.version do %>
+
+              <li class="my-6">
+                <%= link "❯ Rechnung erstellen", to: "#", class: "text-xs btn btn-outline-default", phx_click: "create_orderfile", phx_value_mode: "invoice",phx_value_version: v._version, phx_target: @myself, phx_disable_with: "bitte warten..." %>
+              </li>
+              <% end %>
+              <% end %>
+
+
+              <%= if v.files["deliveryslip"] do %>
+              <li class="flex items-center justify-between py-3 pl-3 pr-4 text-sm">
+                <div class="flex items-center flex-1 w-0">
+                  <!-- Heroicon name: solid/paper-clip -->
+                  <svg class="flex-shrink-0 w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd"
+                      d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <span class="flex-1 w-0 ml-2">
+                    <a href={  v.files["deliveryslip"].url } class="font-medium text-blue-600 hover:text-blue-500"
+                      title={v.files["deliveryslip"].created_at}>
+                      Lieferschein
+                    </a>
+                  </span>
+                </div>
+              </li>
+
+              <% else %>
+              <%= if v._version == @order.version do %>
+
+              <li class="my-6">
+                <%= link "❯ Lieferschein erstellen", to: "#", class: "text-xs btn btn-outline-default", phx_click: "create_orderfile", phx_value_mode: "deliveryslip",phx_value_version: v._version, phx_target: @myself, phx_disable_with: "bitte warten..." %>
+              </li>
+              <% end %>
+              <% end %>
+            </ul>
+
+
+          </td>
+        </tr>
+        <% end %>
+      </table>
+
+    </dd>
+  </div>
+
+</div>

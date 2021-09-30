@@ -1,0 +1,90 @@
+<div class="relative " id={@id} >
+
+
+
+  <.form let={f} for={@changeset} as="fdata" phx-submit="validate" phx-change="validate" phx_target={@myself}
+    id={"orderitem_#{@idx}form"}>
+
+
+    <%= case @data.type do %>
+    <%= "product" ->  %>
+
+    <div class={"flex w-full divide-x divide-x-gray-500 "<>if current_value(f,@data,:deleted) , do: "opacity-10", else: ""}>
+      <div class="w-40 p-2 text-right">
+        <%= live_component MyAppBe.Live.ShopLive.OrderitemFieldComponent, data: @data , f: f, field: get_field(:amount), editing: @editing[:amount], editable: @editable, target_id: "##{@id}", id: "edit_#{@idx}_#{:amount}" %>
+        <div class="text-sm text-gray-400">
+        <%= live_component MyAppBe.Live.ShopLive.OrderitemFieldComponent, data: @data , f: f, field: get_field(:single_price), editing: @editing[:single_price], editable: @editable, target_id: "##{@id}", id: "edit_#{@idx}_#{:single_price}", display_value: current_value(f,@data,:single_price)   |> format_price(@context.order_ui_conf)   %>
+
+        </div>
+      </div>
+      <div class="flex-auto p-2">
+        <div class="text-sm">
+          <%= live_component MyAppBe.Live.ShopLive.OrderitemFieldComponent, data: @data , f: f, field: get_field(:title), editing: @editing[:title], editable: @editable, target_id: "##{@id}", id: "edit_#{@idx}_#{:title}" %>
+        </div>
+        <div class="text-xs">
+          <%= live_component MyAppBe.Live.ShopLive.OrderitemFieldComponent, data: @data , f: f, field: get_field(:subtitle), editing: @editing[:subtitle], editable: @editable, target_id: "##{@id}", id: "edit_#{@idx}_#{:subtitle}" %>
+        </div>
+        <%= if @data[:pv_sku] do %>
+        <div class="text-right"><span class="p-1 text-xs text-white bg-gray-400 rounded"><%= @data.pv_sku %></span> </div>
+        <% end %>
+
+      </div>
+      <div class="p-2 text-right w-30">
+        <%= current_value(f,@data,:total_price)   |> format_price(@context.order_ui_conf)  %>
+
+        <div class="text-xs text-right text-gray-400">
+
+        <%= live_component MyAppBe.Live.ShopLive.OrderitemFieldComponent, data: @data , f: f, field: get_field(:taxrate), editing: @editing[:taxrate], editable: @editable, target_id: "##{@id}", id: "edit_#{@idx}_#{:taxrate}", display_value: current_value(f,@data,:taxrate)<>"%" %>
+        </div>
+        <div class="text-right">
+          <%= if current_value(f,@data,:deleted) do %>
+          <%= link  tw_icon(&Heroicons.Outline.x/1, "w-5 h-5"), to: "#", "x-on:click": "triggerChange", phx_target: @myself, phx_click: "undelete_item", class: " text-black inline-block mt-3"
+  %>
+          <% else %>
+          <%= link  tw_icon(&Heroicons.Outline.trash/1, "w-5 h-5"), to: "#", "x-on:click": "triggerChange", phx_target: @myself, phx_click: "delete_item", class: " text-gray-300 hover:text-red-500 inline-block mt-3",
+        data: [confirm: "Are you sure you want to delete this line ?"] 
+  %>
+          <% end %>
+        </div>
+
+      </div>
+    </div>
+
+    <%= type when type in ~w(total subtotal total_tax) ->  %>
+
+    <div class="flex w-full divide-x divide-x-gray-500">
+      <div class="w-20 p-2 text-right">
+      </div>
+      <div class="flex-auto p-2">
+        <%= @data.title %>
+
+      </div>
+      <div class="w-24 p-2 text-right">
+        <%= @data.total_price   |> format_price(@context.order_ui_conf)  %>
+      </div>
+    </div>
+
+    <%= "addon" ->  %>
+
+    <div class="flex w-full divide-x divide-x-gray-500">
+      <div class="w-20 p-2 text-right">
+      </div>
+      <div class="flex-auto p-2">
+        <div class="text-sm"><%= @data.title %></div>
+        <div class="text-xs"><%= @data.subtitle %></div>
+      </div>
+      <div class="w-24 p-2 text-right">
+        <%= @data.total_price   |> format_price(@context.order_ui_conf)  %>
+        <div class="text-xs text-right text-gray-400"><%= @data.taxrate %>%</div>
+
+      </div>
+    </div>
+
+    <%= _ ->  %> <div>
+      unknown item type: '<%= @data.type %>': <div class="font-mono text-xs whitespace-pre-wrap">
+        <%= @data  |> inspect(pretty: true) %></div>
+    </div>
+
+    <%= end %>
+  </.form>
+</div>
