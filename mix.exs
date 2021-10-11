@@ -1,7 +1,7 @@
 defmodule KandisOrderUi.MixProject do
   use Mix.Project
 
-  @version "0.1.13"
+  @version "0.5.1"
   def project do
     [
       app: :kandis_order_ui,
